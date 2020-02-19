@@ -1,4 +1,4 @@
-﻿@model WordSearchMVC5.Models.WordGrid
+﻿@model WordSearchMVC5.Models.WordUserInput
 @{
     ViewBag.Title = "Word Search";
 }
@@ -24,7 +24,7 @@
         <div class="form-group">
             <label for="WordListEntry">Enter Words</label>
             <p class="sub-helper-text">Separate each word with a space. Press Shift+Enter, or use the enter button to put in your words.</p>
-            @Html.EditorFor(model => model.Words, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.EditorFor(model => model.UserWords, new { htmlAttributes = new { @class = "form-control" } })
 
         </div>
         <input type="submit" value="Start Word Search" class="btn btn-primary"/>

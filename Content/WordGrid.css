@@ -1,0 +1,14 @@
+﻿table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid;
+    color: black;
+    font-size: 48px;
+    padding: 20px;
+}
+
+table td.highlighted {
+    background-color:#999;
+}

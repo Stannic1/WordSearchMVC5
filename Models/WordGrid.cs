@@ -9,23 +9,23 @@ namespace WordSearchMVC5.Models
     public class WordGrid
     {
         public List<string> UserWords { get; set; }
-        [Required]
-        public string Words { get; set; }
-        [Required]
         public int GridSize { get; set; }
+        public int RowCol { get; set; }
 
         public WordGrid()
         {
             UserWords = new List<string>();
         }
 
-        public void ConvertToUserWords()
+        public void InitWordGrid(WordUserInput input)
         {
-            string[] conversion = Words.Split(' ');
-            foreach (var items in conversion) 
+            string[] conversion = input.UserWords.Split(' ');
+            foreach (var items in conversion)
             {
                 UserWords.Add(items);
             }
+            RowCol = input.GridSize;
+            GridSize = input.GridSize * input.GridSize;
         }
         public Boolean ValidWord(string userEntry)
         {

@@ -1,11 +1,20 @@
-﻿@model List<WordSearchMVC5.Models.WordGrid>
+﻿@model WordSearchMVC5.Models.WordGrid
 @{ 
-    string[] testmembers = { "a", "b", "c", "d", "e" };
+    string tablerowcol = "trc";
 }
-<table>
+@Styles.Render("~/Content/WordGrid.css")
+@Scripts.Render("~/Scripts/wordsearch.js")
+<p>User words are: @Model.UserWords[0]</p>
+<p>The word length is: @Model.RowCol</p>
+<p>The grid length is: @Model.GridSize</p>
+<table id="selected_table">
+    @for (int i = 0; i < Model.RowCol; i++)
+    {
     <tr>
-        <th>
-            @Model[0].Words
-        </th>
+        @for (int j = 0; j < Model.RowCol; j++)
+        {
+            <td id="@(tablerowcol + i.ToString() + j.ToString())">@j</td>
+        }
     </tr>
+    }
 </table>
