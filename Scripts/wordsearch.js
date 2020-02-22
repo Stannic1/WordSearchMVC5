@@ -78,7 +78,7 @@ $(function () {
         return false;
     }
 
-    //Functions to help make reading some of the lines easier.
+    //Helper functions
     function isRowValid(i) {
         var rowcount = document.getElementById("selected_table").rows.length;
         return ((i >= 0) && (i <= rowcount));

@@ -8,12 +8,12 @@
 <p>The word length is: @Model.RowCol</p>
 <p>The grid length is: @Model.GridSize</p>
 <table id="selected_table">
-    @for (int i = 0; i < Model.RowCol; i++)
+    @for (int i = 0; i < Model.GridSize; i += Model.RowCol)
     {
     <tr>
-        @for (int j = 0; j < Model.RowCol; j++)
+        @for (int j = i; j < (i + Model.RowCol); j++)
         {
-            <td id="@(tablerowcol + i.ToString() + j.ToString())">@j</td>
+            <td id="@(tablerowcol + i.ToString() + j.ToString())">@Model.GridContent[j]</td>
         }
     </tr>
     }
