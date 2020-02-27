@@ -40,23 +40,57 @@ namespace WordSearchMVC5.Models
         private Random rand;
         #endregion
 
-        public void InitWordGrid(WordUserInput input, string key)
+        public Boolean InitWordGrid(WordUserInput input, string key)
         {
             _wordlist = new List<string>();
             UserWords = _wordlist;
-            string[] conversion = input.UserWords.Split(' ');
-            foreach (var items in conversion)
-            {
-                UserWords.Add(items);
-                Trace.WriteLine(items);
-            }
             RowCol = input.GridSize;
             GridSize = input.GridSize * input.GridSize;
             GridContent = new char[GridSize];
+            string[] conversion = input.UserWords.Split(' ');
+            int getCount = 0;
+            Trace.WriteLine("Before Checking items");
+            foreach (var items in conversion)
+            {
+                UserWords.Add(items);
+                getCount = items.Length;
+                if (items.Length > RowCol || getCount > GridSize)
+                {
+                    Trace.WriteLine("Return False" + items.Length);
+                    return false;
+                }
+            }
+            Trace.WriteLine("After Checking item list");
+
             SessionKey = key;
             directions = GenerateTries();
             rand = new Random();
-            GenerateTable();
+            Trace.WriteLine("Before GenerateTable");
+            if (GenerateTable())
+            {
+                Trace.WriteLine("In GenerateTable");
+                return true;
+            } 
+            else
+            {
+                return false;
+            }
+
+        }
+
+        public Boolean ReInitWordGrid()
+        {
+            GridContent = new char[GridSize];
+            directions = GenerateTries();
+            rand = new Random();
+            if (GenerateTable())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         public Boolean ValidWord(string userEntry)
         {
@@ -66,13 +100,15 @@ namespace WordSearchMVC5.Models
             return UserWords.Contains(userEntry) || UserWords.Contains(reversed);
         }
 
+
+
         // TODO: Reduce redundancy. LOADS of redundancies.
         #region Word Placement
         /// <summary>
         /// Will attempt to populate the grid. 
         /// </summary>
         // TODO: turn it into a boolean so it can give the user an error if it cannot place it all.
-        public void GenerateTable()
+        public Boolean GenerateTable()
         {
             int capacity;
             int attempts = 50;
@@ -81,12 +117,21 @@ namespace WordSearchMVC5.Models
             {
                 capacity = GridSize;
                 GridContent = new char[GridSize];
-                RandomPlacement(UserWords, capacity, GridContent, 0);
+                if (RandomPlacement(UserWords, capacity, GridContent, 0))
+                    break;
 
                 attempts--;
+                Trace.WriteLine("Attempts:" + attempts);
             }
-
-            PopulateGrid();
+            if (attempts == 0)
+            {
+                return false;
+            } 
+            else
+            {
+                PopulateGrid();
+                return true;
+            }
         }
 
         /// <summary>

@@ -15,17 +15,32 @@ namespace WordSearchMVC5.Controllers
         {
             return View();
         }
+
+
         [HttpPost]
-        public PartialViewResult WordSearch(WordUserInput item)
+        public ActionResult WordSearch(WordUserInput item)
         {
             // TODO: Place these into another function or helper folder to keep the controller slim.
             Guid randkey = Guid.NewGuid();
             string sessionKey = Convert.ToBase64String(randkey.ToByteArray());
             sessionKey = sessionKey.Replace("=", "");
             sessionKey = sessionKey.Replace("+", "");
-            db.InitWordGrid(item, sessionKey);
-            Session[sessionKey] = db;
-            return PartialView("_WordSearch",db);
+            if (db.InitWordGrid(item, sessionKey))
+            {
+                Session[sessionKey] = db;
+                return PartialView("_WordSearch", db);
+            }
+            else
+            {
+                return PartialView("InputError");
+            }
+        }
+        [HttpPost]
+        public ActionResult WordSearchReroll(string SessionKey) {
+            db = Session[SessionKey] as WordGrid;
+            db.ReInitWordGrid();
+            Session[SessionKey] = db;
+            return PartialView("_WordSearch", db);
         }
         [HttpPost]
         public ActionResult WordSearchUserFind(string input, string key)

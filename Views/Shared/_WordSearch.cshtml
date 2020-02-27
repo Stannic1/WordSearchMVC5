@@ -1,15 +1,17 @@
 ﻿@model WordSearchMVC5.Models.WordGrid
+@Html.ValidationMessage("Error")
 @{
     string inittime = DateTime.Today.ToString();
 }
+
 @Scripts.Render("~/Scripts/wordgame.js")
 @*A link because it's easier to update the css using a time.*@
 <link rel="stylesheet" type="text/css" media="screen" href="~/Content/WordGrid.css?@inittime" />
 <p id="sessionkey" style="visibility: hidden">@Model.SessionKey</p>
 @*<p>User words are: @Model.UserWords[0]</p>
-<p>The word length is: @Model.RowCol</p>
-<p>The grid length is: @Model.GridSize</p>*@
-<div class="row">
+    <p>The word length is: @Model.RowCol</p>
+    <p>The grid length is: @Model.GridSize</p>*@
+<div class="row" id="RerollWordSearch">
     <div class="col-lg-4">
         <table id="selected_table">
             @for (int i = 0; i < Model.GridSize; i += Model.RowCol)
@@ -32,3 +34,15 @@
         }
     </div>
 </div>
+
+@Html.ActionLink("WordSearchReroll","Home",null, new { @class = "Reroll", id = "RerollID" })
+
+@using (Ajax.BeginForm("WordSearchReroll", "Home", new AjaxOptions
+{
+    HttpMethod = "POST",
+    UpdateTargetId = "RerollWordSearch"
+}))
+{
+
+        @Html.Hidden("SessionKey")
+}
