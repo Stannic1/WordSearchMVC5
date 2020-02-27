@@ -1,5 +1,6 @@
 ﻿
 $(function () {
+    //Function wide variables.
     var selected = [];
     var selectcount = 0;
     var startx, starty;
@@ -13,8 +14,7 @@ $(function () {
         for (var i = 0; i < selected.length; i++) {
             makeString = makeString + $(selected[i]).text();
         }
-        
-        console.log({ makeString });
+        //Using the promise function, it will return the data to be used later on.
         return $.ajax({
             type: 'POST',
             url: '/Home/WordSearchUserFind/',
@@ -150,5 +150,4 @@ $(function () {
         isMouseDown = false;
         deselectAll();
     });
-
 });

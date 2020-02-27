@@ -68,6 +68,10 @@ namespace WordSearchMVC5.Models
 
         // TODO: Reduce redundancy. LOADS of redundancies.
         #region Word Placement
+        /// <summary>
+        /// Will attempt to populate the grid. 
+        /// </summary>
+        // TODO: turn it into a boolean so it can give the user an error if it cannot place it all.
         public void GenerateTable()
         {
             int capacity;
@@ -85,10 +89,19 @@ namespace WordSearchMVC5.Models
             PopulateGrid();
         }
 
+        /// <summary>
+        /// The function will attempt to place words onto the grid. It will call itself until 
+        /// there is no capacity and when all words are placed. Otherwise it will fail.
+        /// Other failure points are when certain directions causes it to return false that it
+        /// will backtrack and attempt to place another word at a random cell with random direction.
+        /// </summary>
+        /// <param name="wordlist"></param>
+        /// <param name="capacity">int</param>
+        /// <param name="placeGrid"></param>
+        /// <param name="index">int</param>
+        /// <returns>boolean</returns>
         public Boolean RandomPlacement(List<string> wordlist, int capacity, char[] placeGrid, int index)
         {
-            //Trace.WriteLine("Entering RandomPlacement.");
-            //Trace.WriteLine(String.Format("The Index is at: {0}", index));
             if (index == wordlist.Count)
             {
                 return true;
@@ -96,11 +109,8 @@ namespace WordSearchMVC5.Models
 
             while(capacity > 0)
             {
-                //Trace.WriteLine(String.Format("This is the {0} loop.", index));
                 int cell = rand.Next(GridSize);
                 Direction tryDir = GetRandomDirection();
-                //Trace.WriteLine(String.Format("Attempting cell at {0}", cell));
-                //Trace.WriteLine(String.Format("Direction is: x = {0} , y = {1}", tryDir.x, tryDir.y));
 
 
                 if (TryPlaceWord(wordlist[index], cell, GridContent, tryDir))
@@ -110,7 +120,6 @@ namespace WordSearchMVC5.Models
                     var gridBackup = GridContent;
                     GridContent = PlaceWord(wordlist[index], GridContent, cell, tryDir);
                     index++;
-                    //Trace.WriteLine(String.Format("About to enter recursion"));
                     if (RandomPlacement(wordlist, capacity, GridContent, index) == true)
                     {
                         return true;
@@ -121,11 +130,19 @@ namespace WordSearchMVC5.Models
             return false;
         }
 
+        // TODO: Implement BruteForcePlacement
         public void BruteForcePlacement()
         {
 
         }
-
+        /// <summary>
+        /// Places words based on direction.
+        /// </summary>
+        /// <param name="word"></param>
+        /// <param name="placeGrid"></param>
+        /// <param name="cell"></param>
+        /// <param name="dir"></param>
+        /// <returns></returns>
         private char[] PlaceWord(string word, char[] placeGrid, int cell, Direction dir)
         {
             char[] wordtochar = word.ToArray();
@@ -139,7 +156,14 @@ namespace WordSearchMVC5.Models
             }
             return placeGrid;
         }
-
+        /// <summary>
+        /// Removes previous word to a control character of null for placing future words.
+        /// </summary>
+        /// <param name="word"></param>
+        /// <param name="placeGrid"></param>
+        /// <param name="cell"></param>
+        /// <param name="dir"></param>
+        /// <returns></returns>
         private char[] RemoveWord(string word, char[] placeGrid, int cell, Direction dir)
         {
             char[] wordtochar = word.ToArray();
@@ -148,15 +172,24 @@ namespace WordSearchMVC5.Models
 
             for (int i = 0; i < wordtochar.Length; i++)
             {
-                placeGrid[cellNumber] = ' ';
+                placeGrid[cellNumber] = '\0';
                 cellNumber = cellNumber + (RowCol * dir.x + (1 * dir.y));
             }
             return placeGrid;
         }
 
+        /// <summary>
+        /// The function will attempt to place a word somewhere in the grid. The rows are 
+        /// invalid if it steps out of boundaries using IsRowInvalid or IsColInvalid. Otherwise
+        /// it will keep checking the row/col based on the direction.
+        /// </summary>
+        /// <param name="word">string</param>
+        /// <param name="cell">int</param>
+        /// <param name="placeGrid">toberemoved</param>
+        /// <param name="dir">Direction</param>
+        /// <returns>boolean</returns>
         private Boolean TryPlaceWord(string word, int cell, char[] placeGrid, Direction dir)
         {
-            int wordlength = word.Length;
             char[] testWord = word.ToCharArray();
             int curRow = cell / RowCol;
             int curCol = cell % RowCol;
@@ -166,12 +199,12 @@ namespace WordSearchMVC5.Models
             for (int i = 0; i < testWord.Length; i++)
             {
                 if (IsRowInvalid(curRow) ||
-                    IsColInvalid(curCol)
-                    )
+                    IsColInvalid(curCol))
                 {
                     return false;
                 }
-                
+                //In C#, when the grid is initialized, the 'empty squares are Control characters.
+                //Please correct me if wrong.
                 if (Char.IsControl(GridContent[cellNumber]) || testWord[i] == GridContent[cellNumber])
                 {
 
@@ -187,10 +220,14 @@ namespace WordSearchMVC5.Models
             return true;
         }
 
+        /// <summary>
+        /// Populate the grid where there is are no characters. 
+        /// </summary>
         private void PopulateGrid()
         {
             for (int i = 0; i < GridSize; i++)
             {
+                //Could potentially do Char.IsControl.
                 if (!Char.IsLetter(GridContent[i]))
                     GridContent[i] = (char)rand.Next(97, 122);
             }
@@ -199,7 +236,10 @@ namespace WordSearchMVC5.Models
         #endregion
 
         #region Helper Functions 
-
+        /// <summary>
+        /// Generates all the directions that the function will try.
+        /// </summary>
+        /// <returns></returns>
         private List<Direction> GenerateTries()
         {
             return new List<Direction>()
@@ -214,12 +254,23 @@ namespace WordSearchMVC5.Models
         {
             return directions[rand.Next(directions.Count)];
         }
-
+        /// <summary>
+        /// If a number happens to step out of the boundaries which is the max number
+        /// of rows, then it will return false. Going to -1 or beyond max returns false.
+        /// </summary>
+        /// <param name="row">int</param>
+        /// <returns>boolean</returns>
         private Boolean IsRowInvalid(int row)
         {
             return ((row < 0) || (row > RowCol-1));
         }
 
+        /// <summary>
+        /// If a number happens to step out of the boundaries which is the max number
+        /// of columns, then it will return false. Going to -1 or beyond max returns false.
+        /// </summary>
+        /// <param name="col">int</param>
+        /// <returns>boolean</returns>
         private Boolean IsColInvalid(int col)
         {
             return ((col < 0) || (col > RowCol-1));
