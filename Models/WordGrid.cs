@@ -40,14 +40,14 @@ namespace WordSearchMVC5.Models
         private Random rand;
         #endregion
 
-        public Boolean InitWordGrid(WordUserInput input, string key)
+        public Boolean InitWordGrid(int size, string input, string key)
         {
             _wordlist = new List<string>();
             UserWords = _wordlist;
-            RowCol = input.GridSize;
-            GridSize = input.GridSize * input.GridSize;
+            RowCol = size;
+            GridSize = size * size;
             GridContent = new char[GridSize];
-            string[] conversion = input.UserWords.Split(' ');
+            string[] conversion = input.Split(' ');
             int getCount = 0;
             Trace.WriteLine("Before Checking items");
             foreach (var items in conversion)

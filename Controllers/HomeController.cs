@@ -18,21 +18,20 @@ namespace WordSearchMVC5.Controllers
 
 
         [HttpPost]
-        public ActionResult WordSearch(WordUserInput item)
+        public ActionResult WordSearch(int userNumbers, string userWordList)
         {
             // TODO: Place these into another function or helper folder to keep the controller slim.
             Guid randkey = Guid.NewGuid();
             string sessionKey = Convert.ToBase64String(randkey.ToByteArray());
             sessionKey = sessionKey.Replace("=", "");
             sessionKey = sessionKey.Replace("+", "");
-            if (db.InitWordGrid(item, sessionKey))
+            if (db.InitWordGrid(userNumbers, userWordList, sessionKey))
             {
                 Session[sessionKey] = db;
                 return PartialView("_WordSearch", db);
-            }
-            else
+            } else
             {
-                return PartialView("InputError");
+                return View();
             }
         }
         [HttpPost]
