@@ -26,28 +26,34 @@ namespace WordSearchMVC5.Models
                 this.y = y;
             }
         }
+        #region variables for razor pages.
         public List<string> UserWords { get; set; }
         public int GridSize { get; set; }
         public int RowCol { get; set; }
         public char[] GridContent { get; set; }
+        public string SessionKey { get; set; }
+        #endregion
+
+        #region private variables for the model
+        private List<string> _wordlist;
         private List<Direction> directions;
         private Random rand;
+        #endregion
 
-        public WordGrid()
+        public void InitWordGrid(WordUserInput input, string key)
         {
-            UserWords = new List<string>();
-        }
-
-        public void InitWordGrid(WordUserInput input)
-        {
+            _wordlist = new List<string>();
+            UserWords = _wordlist;
             string[] conversion = input.UserWords.Split(' ');
             foreach (var items in conversion)
             {
                 UserWords.Add(items);
+                Trace.WriteLine(items);
             }
             RowCol = input.GridSize;
             GridSize = input.GridSize * input.GridSize;
             GridContent = new char[GridSize];
+            SessionKey = key;
             directions = GenerateTries();
             rand = new Random();
             GenerateTable();
@@ -56,11 +62,12 @@ namespace WordSearchMVC5.Models
         {
             char[] reversedEntry = userEntry.ToCharArray();
             Array.Reverse(reversedEntry);
-            return UserWords.Contains(userEntry) || UserWords.Contains(reversedEntry.ToString());
+            string reversed = new string(reversedEntry);
+            return UserWords.Contains(userEntry) || UserWords.Contains(reversed);
         }
 
+        // TODO: Reduce redundancy. LOADS of redundancies.
         #region Word Placement
-
         public void GenerateTable()
         {
             int capacity;
@@ -154,8 +161,6 @@ namespace WordSearchMVC5.Models
             int curRow = cell / RowCol;
             int curCol = cell % RowCol;
             int cellNumber = cell;
-            //Trace.WriteLine(String.Format("curRow: {0}, curCol: {1}, cellNumber: {2}", curRow, curCol, cellNumber));
-            //Trace.WriteLine(String.Format("Word is: {0}", word));
 
 
             for (int i = 0; i < testWord.Length; i++)
@@ -166,9 +171,6 @@ namespace WordSearchMVC5.Models
                 {
                     return false;
                 }
-
-                //Trace.WriteLine(String.Format("The character and i is: {0} {1}", testWord[i], i));
-                //Trace.WriteLine(String.Format("Is it a whitespace?: {0} {1}", Char.IsControl(GridContent[cellNumber]), GridContent[cellNumber]));
                 
                 if (Char.IsControl(GridContent[cellNumber]) || testWord[i] == GridContent[cellNumber])
                 {
@@ -176,7 +178,8 @@ namespace WordSearchMVC5.Models
                     curRow = curRow + (dir.x);
                     curCol = curCol + (dir.y);
                     cellNumber = cellNumber + (RowCol * dir.x + (1 * dir.y));
-                } else
+                } 
+                else
                 {
                     return false;
                 }
@@ -186,12 +189,11 @@ namespace WordSearchMVC5.Models
 
         private void PopulateGrid()
         {
-            //for (int i = 0; i < GridSize; i++)
-            //{
-            //    if (!Char.IsLetter(GridContent[i]))
-            //        GridContent[i] = (char)rand.Next(97, 122);
-            //    Trace.WriteLine(String.Format("GridContent[{0}] is {1}", i, GridContent[i]));
-            //}
+            for (int i = 0; i < GridSize; i++)
+            {
+                if (!Char.IsLetter(GridContent[i]))
+                    GridContent[i] = (char)rand.Next(97, 122);
+            }
 
         }
         #endregion

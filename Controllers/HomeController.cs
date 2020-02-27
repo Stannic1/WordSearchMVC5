@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -17,9 +18,20 @@ namespace WordSearchMVC5.Controllers
         [HttpPost]
         public PartialViewResult WordSearch(WordUserInput item)
         {
-
-            db.InitWordGrid(item);
+            // TODO: Place these into another function or helper folder to keep the controller slim.
+            Guid randkey = Guid.NewGuid();
+            string sessionKey = Convert.ToBase64String(randkey.ToByteArray());
+            sessionKey = sessionKey.Replace("=", "");
+            sessionKey = sessionKey.Replace("+", "");
+            db.InitWordGrid(item, sessionKey);
+            Session[sessionKey] = db;
             return PartialView("_WordSearch",db);
+        }
+        [HttpPost]
+        public ActionResult WordSearchUserFind(string input, string key)
+        {
+            db = Session[key] as WordGrid;
+            return db.ValidWord(input) ? Json(new { success = true }) : Json(new { success = false });
         }
 
         public ActionResult About()

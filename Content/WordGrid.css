@@ -12,3 +12,7 @@ table, th, td {
 table td.highlighted {
     background-color:#999;
 }
+
+.correct {
+    background-color: #ff0000;
+}

@@ -1,20 +1,34 @@
 ﻿@model WordSearchMVC5.Models.WordGrid
-@{ 
-    string tablerowcol = "trc";
+@{
+    string inittime = DateTime.Today.ToString();
 }
-@Styles.Render("~/Content/WordGrid.css")
-@Scripts.Render("~/Scripts/wordsearch.js")
-<p>User words are: @Model.UserWords[0]</p>
+@Scripts.Render("~/Scripts/wordgame.js")
+@*A link because it's easier to update the css using a time.*@
+<link rel="stylesheet" type="text/css" media="screen" href="~/Content/WordGrid.css?@inittime" />
+<p id="sessionkey" style="visibility: hidden">@Model.SessionKey</p>
+@*<p>User words are: @Model.UserWords[0]</p>
 <p>The word length is: @Model.RowCol</p>
-<p>The grid length is: @Model.GridSize</p>
-<table id="selected_table">
-    @for (int i = 0; i < Model.GridSize; i += Model.RowCol)
-    {
-    <tr>
-        @for (int j = i; j < (i + Model.RowCol); j++)
+<p>The grid length is: @Model.GridSize</p>*@
+<div class="row">
+    <div class="col-lg-4">
+        <table id="selected_table">
+            @for (int i = 0; i < Model.GridSize; i += Model.RowCol)
+            {
+                <tr>
+                    @for (int j = i; j < (i + Model.RowCol); j++)
+                    {
+                        <td>@Model.GridContent[j]</td>
+                    }
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="col-lg-2">
+        @for (int i = 0; i < Model.UserWords.Count; i++)
         {
-            <td id="@(tablerowcol + i.ToString() + j.ToString())">@Model.GridContent[j]</td>
+            <p>
+                @Model.UserWords[i]
+            </p>
         }
-    </tr>
-    }
-</table>
+    </div>
+</div>
