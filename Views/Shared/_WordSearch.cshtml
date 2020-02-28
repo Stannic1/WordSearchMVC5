@@ -2,18 +2,17 @@
 @{
     string inittime = DateTime.Today.ToString();
 }
-    <div id="replaceable">
-        @Scripts.Render("~/Scripts/wordgame.js")
-        @*A link because it's easier to update the css using a time.*@
-        <link rel="stylesheet" type="text/css" media="screen" href="~/Content/WordGrid.css?@inittime" />
-        <p id="sessionkey" style="visibility: hidden">@Model.SessionKey</p>
-        <div id="reroll">
-            @Html.Partial("_Grid");
-        </div>
-        <form onsubmit="return false;">
-            @Html.Hidden("SessionKey")
-            <input type="submit" id="rerollbutton" value="Reroll!" class="btn btn-primary" />
-        </form>
+<div id="replaceable">
+    @*A link because it's easier to update the css using a time.*@
+    <link rel="stylesheet" type="text/css" media="screen" href="~/Content/WordGrid.css?@inittime" />
+    <p id="sessionkey" style="visibility: hidden">@Model.SessionKey</p>
+    <div id="reroll">
+        @Html.Partial("_Grid");
     </div>
+    <form onsubmit="return false;">
+        @Html.Hidden("SessionKey")
+        <input type="submit" id="rerollbutton" value="Reroll!" class="btn btn-primary" />
+    </form>
+</div>
 
 
