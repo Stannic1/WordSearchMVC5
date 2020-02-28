@@ -15,8 +15,6 @@ namespace WordSearchMVC5.Controllers
         {
             return View();
         }
-
-
         [HttpPost]
         public ActionResult WordSearch(int userNumbers, string userWordList)
         {

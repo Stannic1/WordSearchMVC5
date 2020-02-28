@@ -7,32 +7,6 @@
         @*A link because it's easier to update the css using a time.*@
         <link rel="stylesheet" type="text/css" media="screen" href="~/Content/WordGrid.css?@inittime" />
         <p id="sessionkey" style="visibility: hidden">@Model.SessionKey</p>
-        @*<p>User words are: @Model.UserWords[0]</p>
-        <p>The word length is: @Model.RowCol</p>
-        <p>The grid length is: @Model.GridSize</p>*@
-        @*<div class="row" id="RerollWordSearch">
-            <div class="col-lg-4">
-                <table id="selected_table">
-                    @for (int i = 0; i < Model.GridSize; i += Model.RowCol)
-                    {
-                        <tr>
-                            @for (int j = i; j < (i + Model.RowCol); j++)
-                            {
-                                <td>@Model.GridContent[j]</td>
-                            }
-                        </tr>
-                    }
-                </table>
-            </div>
-            <div class="col-lg-2">
-                @for (int i = 0; i < Model.UserWords.Count; i++)
-                {
-                    <p>
-                        @Model.UserWords[i]
-                    </p>method="post" data-ajax="true" data-ajax-method="post" data-ajax-success="success" data-ajax-url="/Home/WordSearchReroll" data-ajax-update="#replaceable
-                }
-            </div>
-        </div>*@
         <div id="reroll">
             @Html.Partial("_Grid");
         </div>
@@ -40,8 +14,6 @@
             @Html.Hidden("SessionKey")
             <input type="submit" id="rerollbutton" value="Reroll!" class="btn btn-primary" />
         </form>
-
-
     </div>
 
 
