@@ -151,3 +151,15 @@ $(function () {
         deselectAll();
     });
 });
+
+$("#rerollbutton").click(function (e) {
+    e.preventDefault();
+    $.ajax({
+        url: "Home/WordSearchReroll",
+        type: "get",
+        data: $("form").serialize(), //if you need to post Model data, use this
+        success: function (result) {
+            $("#reroll").html(result);
+        }
+    });
+})

@@ -1,0 +1,25 @@
+﻿@model WordSearchMVC5.Models.WordGrid
+
+<div class="row" id="RerollWordSearch">
+    <div class="col-lg-4">
+        <table id="selected_table">
+            @for (int i = 0; i < Model.GridSize; i += Model.RowCol)
+            {
+                <tr>
+                    @for (int j = i; j < (i + Model.RowCol); j++)
+                    {
+                        <td>@Model.GridContent[j]</td>
+                    }
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="col-lg-2">
+        @for (int i = 0; i < Model.UserWords.Count; i++)
+        {
+            <p>
+                @Model.UserWords[i]
+            </p>
+        }
+    </div>
+</div>

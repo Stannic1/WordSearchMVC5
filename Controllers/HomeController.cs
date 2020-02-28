@@ -34,12 +34,12 @@ namespace WordSearchMVC5.Controllers
                 return View();
             }
         }
-        [HttpPost]
+        [HttpGet]
         public ActionResult WordSearchReroll(string SessionKey) {
             db = Session[SessionKey] as WordGrid;
             db.ReInitWordGrid();
             Session[SessionKey] = db;
-            return PartialView("_WordSearch", db);
+            return PartialView("_Grid", db);
         }
         [HttpPost]
         public ActionResult WordSearchUserFind(string input, string key)
@@ -47,7 +47,12 @@ namespace WordSearchMVC5.Controllers
             db = Session[key] as WordGrid;
             return db.ValidWord(input) ? Json(new { success = true }) : Json(new { success = false });
         }
-
+        [HttpPost]
+        public ActionResult GridLoad(string SessionKey)
+        {
+            db = Session[SessionKey] as WordGrid;
+            return PartialView("_Grid", db);
+        }
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
